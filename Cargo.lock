@@ -1975,8 +1975,7 @@ dependencies = [
 [[package]]
 name = "stackful"
 version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e518515b243405015c2431f737169af4071526330ac199320da7799c51a236e9"
+source = "git+https://github.com/nbdd0121/stackful?branch=master#ccbec347322b943e63295111bddb3df9ef8e4740"
 dependencies = [
  "cc",
  "futures-executor",
