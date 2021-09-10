@@ -43,6 +43,11 @@ class Detect:
         if envelope is None:
             return
 
+        # import time
+        # time.sleep(0.1)
+        # print(envelope.partial_id)
+        # self.out.send(envelope)
+
         image = envelope.msg
         image['items'] = []
 

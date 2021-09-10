@@ -36,11 +36,11 @@ class ReIDVideo:
         msg = envelope.msg
 
         # for crop in image['shaper']:
-            # cv2.imwrite(f'reid_video_{envelope.partial_id}.jpg', crop)
+        #     cv2.imwrite(f'reid_video_{envelope.partial_id}.jpg', crop)
         # logger.info(f'envelope id {envelope.partial_id}')
 
-        msg['features'] = []
-        if 'crop' in msg:
-            msg['feature'] = self._model.inference(msg['crop'])
+        # msg['features'] = []
+        # if 'crop' in msg:
+        #     msg['feature'] = self._model.inference(msg['crop'])
         # logger.info(image['features'])
         self.out.send(envelope)

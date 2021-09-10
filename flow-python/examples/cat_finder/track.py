@@ -26,13 +26,16 @@ class Track:
         if envelope is None:
             logger.info(f'stream tracker finish')
             return
-        
+
         items = envelope.msg['items']
         # logger.debug(f'track input: {items}')
 
-        tracks, failed_ids = self._tracker.track(items)
-        envelope.msg['tracks'] = tracks
-        envelope.msg['failed_ids'] = failed_ids
+        # tracks, failed_ids = self._tracker.track(items)
+        # envelope.msg['tracks'] = tracks
+        # envelope.msg['failed_ids'] = failed_ids
+
+        envelope.msg['tracks'] = []
+        envelope.msg['failed_ids'] = []
         # logger.debug(f'track output: {tracks},  failed_ids: {failed_ids}')
 
         self.out.send(envelope)

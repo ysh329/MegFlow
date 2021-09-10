@@ -130,32 +130,36 @@ class PredictorLite(object):
         inp_data =self.net.get_io_tensor("data")
         inp_data.set_data_by_copy(data)
         
-        # forward
+        # # forward
         self.net.forward()
         self.net.wait()
 
-        # postprocess
-        output_keys = self.net.get_all_output_name()
-        outputs = self.net.get_io_tensor(output_keys[0]).to_numpy()
+        # # postprocess
+        # output_keys = self.net.get_all_output_name()
+        # outputs = self.net.get_io_tensor(output_keys[0]).to_numpy()
 
-        outputs = self.lite_postprocess(outputs[0], list(self.test_size))
-        outputs = outputs[np.newaxis,:]
-        output = mge.tensor(outputs)
+        return None
 
-        ret = postprocess(output, self.num_classes, self.confthre, self.nmsthre)
-        if ret is None:
-            return None
-        bboxes = ret.copy()
-        for i in range(bboxes.shape[0]): 
-            bbox = bboxes[i][0:4]/ratio
-            bbox[0] = self.restrict(bbox[0], 0, max_w)
-            bbox[1] = self.restrict(bbox[1], 0, max_h)
-            bbox[2] = self.restrict(bbox[2], bbox[0], max_w)
-            bbox[3] = self.restrict(bbox[3], bbox[1], max_h)
-            bboxes[i][0:4] = bbox
+        # outputs = self.lite_postprocess(outputs[0], list(self.test_size))
+        # outputs = outputs[np.newaxis,:]
+        # output = mge.tensor(outputs)
 
-        logger.debug("YOLOX infer time: {:.4f}s".format(time.time() - t0))
-        return bboxes
+        # ret = postprocess(output, self.num_classes, self.confthre, self.nmsthre)
+        # if ret is None:
+        #     return None
+        # return ret
+        
+        # bboxes = ret.copy()
+        # for i in range(bboxes.shape[0]): 
+        #     bbox = bboxes[i][0:4]/ratio
+        #     bbox[0] = self.restrict(bbox[0], 0, max_w)
+        #     bbox[1] = self.restrict(bbox[1], 0, max_h)
+        #     bbox[2] = self.restrict(bbox[2], bbox[0], max_w)
+        #     bbox[3] = self.restrict(bbox[3], bbox[1], max_h)
+        #     bboxes[i][0:4] = bbox
+
+        # logger.debug("YOLOX infer time: {:.4f}s".format(time.time() - t0))
+        # return bboxes
 
     def visual(self, output, img, cls_conf=0.35):
         if output is None:
@@ -184,14 +188,17 @@ def main(args):
     if args.tsize is not None:
         test_size = (args.tsize, args.tsize)
 
-    predictor = PredictorLite(args.ckpt, confthre, nmsthre, test_size, COCO_CLASSES, None, None, "gpu", 0)
+    predictor = PredictorLite(args.ckpt, confthre, nmsthre, test_size, COCO_CLASSES, None, None, "cpu", 0)
 
     frame = cv2.imread(args.path)
-    outputs = predictor.inference(frame)
-    result_frame = predictor.visual(outputs, frame)
+    import time
+    for i in range(10000):
+        outputs = predictor.inference(frame)
+        time.sleep(0.1)
+    # result_frame = predictor.visual(outputs, frame)
 
-    filename =  os.path.join(dirname, "out.jpg")
-    cv2.imwrite(filename, result_frame)
+    # filename =  os.path.join(dirname, "out.jpg")
+    # cv2.imwrite(filename, result_frame)
 
 if __name__ == "__main__":
     args = make_parser().parse_args()

@@ -84,27 +84,31 @@ class RedisProxy:
         envelope = self.inp.recv()
         if envelope is None:
             return
+        # self.out.send(envelope)
+
         image = envelope.msg
         items = image['items']
         assert(type(items) == list)
 
-        r = redis.Redis(connection_pool=self._pool)
+        # r = redis.Redis(connection_pool=self._pool)
         
         if self._mode == 'save':
-            self.save_feature(r, image["extra_data"], items)
+            pass
+            # self.save_feature(r, image["extra_data"], items)
 
-            results = []
-            for item in items:
-                result = dict()
-                result['bbox'] = item['bbox'].tolist()
-                result['score'] = str(item['score'])
-                results.append(result)
-            # self.out.send(envelope.repack(json.dumps(results)))
-            self.out.send(envelope)
+            # results = []
+            # for item in items:
+            #     result = dict()
+            #     result['bbox'] = item['bbox'].tolist()
+            #     result['score'] = str(item['score'])
+            #     results.append(result)
+            # # self.out.send(envelope.repack(json.dumps(results)))
+            # self.out.send(envelope)
 
         elif self._mode == 'search':
-            results = self.search_key(r, image['feature'])
-            self.out.send(envelope.repack(json.dumps(results)))
+            pass
+            # results = self.search_key(r, image['feature'])
+            # self.out.send(envelope.repack(json.dumps(results)))
 
         else:
             logger.error(f'unknown mode: {self._mode}')

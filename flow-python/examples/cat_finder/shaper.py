@@ -50,38 +50,40 @@ class Shaper:
                 self.out.send(self._map[id])
             self._map.clear()
             return
+        self.out.send(envelope)
 
-        msg = envelope.msg
+        # msg = envelope.msg
 
         # update the BEST
-        for track in msg['tracks']:
-            tid = track['tid']
-            box = track['bbox']
-            if tid not in self._map:
-                self._map[tid] = envelope.repack(msg)
+        # for track in msg['tracks']:
+        #     tid = track['tid']
+        #     box = track['bbox']
+        #     if tid not in self._map:
+        #         # self._map[tid] = None
+        #         self._map[tid] = envelope.repack(msg)
             
-            data = msg['data']
-            l, t, r, b = self.expand(box, data.shape[1], data.shape[0], 1.1)
-            crop = data[t:b, l:r]
-            assert(crop is not None)
-            quality = Quality.area(crop)
+        #     data = msg['data']
+        #     l, t, r, b = self.expand(box, data.shape[1], data.shape[0], 1.1)
+        #     crop = data[t:b, l:r]
+        #     assert(crop is not None)
+        #     quality = Quality.area(crop)
 
-            if 'BEST' == self._mode:
-                tid_msg = self._map[tid].msg
-                # save best image
-                if 'quality' not in tid_msg:
-                    tid_msg['quality'] = -1
+        #     if 'BEST' == self._mode:
+        #         tid_msg = self._map[tid].msg
+        #         # save best image
+        #         if 'quality' not in tid_msg:
+        #             tid_msg['quality'] = -1
 
-                old_quality = tid_msg['quality']
-                if quality > old_quality:
-                    tid_msg['quality'] = quality
-                    tid_msg['crop'] = crop
+        #         old_quality = tid_msg['quality']
+        #         if quality > old_quality:
+        #             tid_msg['quality'] = quality
+        #             tid_msg['crop'] = crop
 
-        ids = msg['failed_ids']
-        if len(ids) > 0:
-            logger.debug(f'shaper recv failed_ids {ids}')
+        # ids = msg['failed_ids']
+        # if len(ids) > 0:
+        #     logger.debug(f'shaper recv failed_ids {ids}')
 
-            for id in ids:
-                self.out.send(self._map[id])
-                self._map.pop(id)
+        #     for id in ids:
+        #         self.out.send(self._map[id])
+        #         self._map.pop(id)
 
