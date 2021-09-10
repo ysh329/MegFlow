@@ -67,11 +67,9 @@ class PredictorLite(object):
         # ios.add_input(LiteIO("idx", is_host=True))
         # ios.add_input(LiteIO("roi", is_host=True))
 
-        net = mgelite.LiteNetwork(config=net_config, io=ios)
-        net.device_id = device_id
-        net.load(path)
-
-        self.net = net
+        self.net = mgelite.LiteNetwork(config=net_config, io=ios)
+        self.net.device_id = device_id
+        self.net.load(path)
         self.cls_names = cls_names
         self.decoder = decoder
         self.num_classes = 80
@@ -128,7 +126,7 @@ class PredictorLite(object):
         # build input tensor
         data = img[np.newaxis,:]
         inp_data =self.net.get_io_tensor("data")
-        inp_data.set_data_by_copy(data)
+        inp_data.set_data_by_share(data)
         
         # # forward
         self.net.forward()
@@ -194,7 +192,7 @@ def main(args):
     import time
     for i in range(10000):
         outputs = predictor.inference(frame)
-        time.sleep(0.1)
+        # time.sleep(0.)
     # result_frame = predictor.visual(outputs, frame)
 
     # filename =  os.path.join(dirname, "out.jpg")
